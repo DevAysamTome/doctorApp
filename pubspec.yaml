@@ -55,6 +55,7 @@ dependencies:
   google_fonts: ^4.0.4
   flutter_rating_bar: ^4.0.1
   rive: ^0.13.5
+  location: ^6.0.2
   
 
 dev_dependencies:

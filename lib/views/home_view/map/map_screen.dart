@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:emart_app/views/book_appointment_view/location_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'polyline_service.dart';
+import 'package:test_app/views/home_view/map/location_service.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -22,9 +21,7 @@ class _MapScreenState extends State<MapScreen> {
   );
 
   LatLng currentLocation = _initialCameraPosition.target;
-  LatLng? destination;
   Set<Marker> _markers = {};
-  Set<Polyline> _polylines = {};
 
   @override
   void initState() {
@@ -39,12 +36,24 @@ class _MapScreenState extends State<MapScreen> {
 
     for (var doc in documents) {
       final data = doc.data() as Map<String, dynamic>;
-      _setMarker(
-        LatLng(data['latitude'], data['longitude']),
-        data['docName'],
-        data['docCategory'],
-      );
+      print('Fetched data: $data');
+      if (data.containsKey('docLat') && data.containsKey('docLong')) {
+        try {
+          double lat = double.parse(data['docLat']);
+          double lng = double.parse(data['docLong']);
+          _setMarker(
+            LatLng(lat, lng),
+            data['docName'] ?? 'Unknown',
+            data['docCategory'] ?? 'Unknown',
+          );
+        } catch (e) {
+          print('Error parsing coordinates: $e');
+        }
+      } else {
+        print('Missing coordinates in data: $data');
+      }
     }
+    setState(() {}); // Ensure the map is updated with new markers
   }
 
   @override
@@ -64,42 +73,15 @@ class _MapScreenState extends State<MapScreen> {
             },
             onCameraMove: (e) => currentLocation = e.target,
             markers: _markers,
-            polylines: _polylines,
             onTap: (LatLng location) {
-              _setDestination(location);
+              _setMarker(location, 'New Marker', '');
             },
           ),
-          const SizedBox(
-            width: 40,
-            height: 40,
-            child: Icon(Icons.gps_fixed),
-          )
         ],
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          FloatingActionButton(
-            onPressed: () async {
-              LatLng origin = currentLocation;
-              if (destination != null) {
-                await _drawPolyline(origin, destination!);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                        "Please select a destination by tapping on the map"),
-                  ),
-                );
-              }
-            },
-            child: Icon(Icons.settings_ethernet_rounded),
-          ),
-          FloatingActionButton(
-            onPressed: () =>
-                _setMarker(currentLocation, 'Current Location', ''),
-            child: Icon(Icons.location_on),
-          ),
           FloatingActionButton(
             onPressed: () => _getMyLocation(),
             child: Icon(Icons.gps_fixed),
@@ -115,28 +97,6 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Future<void> _drawPolyline(LatLng from, LatLng to) async {
-    try {
-      // Print the coordinates of the from and to points
-      print(
-          "Drawing polyline from: (${from.latitude}, ${from.longitude}) to: (${to.latitude}, ${to.longitude})");
-
-      Polyline polyline = await PolylineService().drawPolyline(from, to);
-      setState(() {
-        _polylines.add(polyline);
-        _setMarker(from, 'Start', '');
-        _setMarker(to, 'End', '');
-      });
-    } catch (e) {
-      print("Error drawing polyline: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Error: $e"),
-        ),
-      );
-    }
-  }
-
   void _setMarker(LatLng location, String title, String snippet) {
     Marker newMarker = Marker(
       markerId: MarkerId(location.toString()),
@@ -146,13 +106,7 @@ class _MapScreenState extends State<MapScreen> {
     );
     setState(() {
       _markers.add(newMarker);
-    });
-  }
-
-  void _setDestination(LatLng location) {
-    setState(() {
-      destination = location;
-      _setMarker(location, 'Destination', '');
+      print('Marker added: ${newMarker.markerId}');
     });
   }
 
@@ -160,6 +114,7 @@ class _MapScreenState extends State<MapScreen> {
     LocationData _myLocation = await LocationService().getLocation();
     setState(() {
       currentLocation = LatLng(_myLocation.latitude!, _myLocation.longitude!);
+      _setMarker(currentLocation, 'Current Location', '');
     });
     _animateCamera(currentLocation);
   }
@@ -170,8 +125,6 @@ class _MapScreenState extends State<MapScreen> {
       target: location,
       zoom: 13.00,
     );
-    print(
-        "animating camera to (lat: ${location.latitude}, long: ${location.longitude}");
     controller.animateCamera(CameraUpdate.newCameraPosition(_cameraPosition));
   }
 }

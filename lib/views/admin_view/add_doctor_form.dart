@@ -17,6 +17,8 @@ class _AddDoctorFormState extends State<AddDoctorForm> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
+  final TextEditingController _latController = TextEditingController();
+  final TextEditingController _longController = TextEditingController();
 
   String? _selectedCity;
   String? _selectedSpecialty;
@@ -50,6 +52,8 @@ class _AddDoctorFormState extends State<AddDoctorForm> {
         'docPhone': _phoneController.text,
         'docDesc': _descController.text,
         'docid': userCredential.user!.uid,
+        'docLat': _latController.text,
+        'docLong': _longController.text,
         'docRatign': 0
       });
 
@@ -59,6 +63,8 @@ class _AddDoctorFormState extends State<AddDoctorForm> {
       _passwordController.clear();
       _phoneController.clear();
       _descController.clear();
+      _latController.clear();
+      _longController.clear();
       _selectedCity = null;
       _selectedSpecialty = null;
 
@@ -158,6 +164,22 @@ class _AddDoctorFormState extends State<AddDoctorForm> {
                 );
               }).toList(),
               decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: _latController,
+              decoration: InputDecoration(
+                labelText: 'Lat for Clinic',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: _longController,
+              decoration: InputDecoration(
+                labelText: 'Long for Clinic',
                 border: OutlineInputBorder(),
               ),
             ),

@@ -4,7 +4,7 @@ import 'package:test_app/views/appointment_view/appointment_view.dart';
 import 'package:test_app/views/category_view/category_view.dart';
 import 'package:test_app/views/home_view/doctor_home_view.dart';
 import 'package:test_app/views/home_view/home_view.dart';
-import 'package:test_app/views/home_view/map/mapScreen.dart';
+import 'package:test_app/views/home_view/map/map_screen.dart';
 import 'package:test_app/views/settings_view/settings_view.dart';
 
 class Home extends StatefulWidget {
@@ -23,7 +23,7 @@ class _HomeState extends State<Home> {
     const AppointmentView(
       isDoctor: false,
     ),
-    MapSection(),
+    MapScreen(),
     CategoryView(),
     const SettingsView(),
   ];
