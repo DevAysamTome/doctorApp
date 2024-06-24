@@ -19,7 +19,7 @@ class AppStrings {
       alreadyHaveAccount = "Already have an account?",
       dontHaveAccount = "Don't have an account?",
       body = "Body",
-      ear = "Ear",
+      ear = "Ear and throat",
       heart = "Heart",
       kidney = "Kidney",
       liver = "Liver",

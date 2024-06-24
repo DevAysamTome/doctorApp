@@ -173,7 +173,7 @@ class PatientDetailsPage extends StatelessWidget {
                     Icons.home, 'Address', patientData['address'] ?? 'Unknown'),
                 const SizedBox(height: 10),
                 _buildInfoRow(Icons.cake, 'Date of Birth',
-                    patientData['dob'] ?? 'Unknown'),
+                    patientData['dateOfBirth'] ?? 'Unknown'),
                 const SizedBox(height: 10),
                 _buildInfoRow(
                     Icons.person, 'Gender', patientData['gender'] ?? 'Unknown'),

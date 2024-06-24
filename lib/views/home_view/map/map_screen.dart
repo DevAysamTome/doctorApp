@@ -79,14 +79,17 @@ class _MapScreenState extends State<MapScreen> {
           ),
         ],
       ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: () => _getMyLocation(),
-            child: Icon(Icons.gps_fixed),
-          ),
-        ],
+      floatingActionButton: Container(
+        padding: EdgeInsets.all(20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            FloatingActionButton(
+              onPressed: () => _getMyLocation(),
+              child: Icon(Icons.gps_fixed),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: Container(
         height: 20,

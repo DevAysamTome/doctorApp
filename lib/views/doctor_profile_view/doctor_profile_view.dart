@@ -75,9 +75,11 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
         .update({'docRating': updatedRating});
 
     fetchFeedback();
-    setState(() {
-      rating = updatedRating;
-    });
+    if (mounted) {
+      setState(() {
+        rating = updatedRating;
+      });
+    }
   }
 
   Future<double> calculateNewAverageRating() async {
@@ -160,7 +162,7 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
-                height: 120,
+                height: 150,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
@@ -199,7 +201,7 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
                           ),
                           TextButton(
                             onPressed: showRatingDialog,
-                            child: Text(
+                            child: const Text(
                               "Rate Doctor",
                               style: TextStyle(color: Colors.blue),
                             ),

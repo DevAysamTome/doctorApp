@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:test_app/consts/colors.dart';
-import '../../consts/fonts.dart';
 import '../../controllers/appointment_controller.dart';
 
 class AppointmentDetailsView extends StatelessWidget {
   final DocumentSnapshot doc;
 
-  const AppointmentDetailsView({Key? key, required this.doc}) : super(key: key);
+  const AppointmentDetailsView({super.key, required this.doc});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,7 @@ class AppointmentDetailsView extends StatelessWidget {
         backgroundColor: AppColors.primaryColor,
         title: Text(
           doc['appWithName'],
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -42,16 +41,16 @@ class AppointmentDetailsView extends StatelessWidget {
               children: [
                 _buildDetailRow(
                     Icons.calendar_today, "Appointment Day", doc['appDay']),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildDetailRow(
                     Icons.access_time, "Appointment Time", doc['appTime']),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 _buildDetailRow(Icons.phone, "Mobile Number", doc['appMobile']),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildDetailRow(Icons.person, "Full Name", doc['appName']),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildDetailRow(Icons.message, "Message", doc['appMsg']),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: () async {
                     bool confirmCancellation = await showDialog(
@@ -86,7 +85,7 @@ class AppointmentDetailsView extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -108,10 +107,10 @@ class AppointmentDetailsView extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, color: AppColors.primaryColor, size: 24),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         Text(
           '$label: ',
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
@@ -119,7 +118,7 @@ class AppointmentDetailsView extends StatelessWidget {
         Expanded(
           child: Text(
             value,
-            style: TextStyle(fontSize: 18),
+            style: const TextStyle(fontSize: 18),
             overflow: TextOverflow.ellipsis,
           ),
         ),

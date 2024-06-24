@@ -50,7 +50,7 @@ class _HeaderState extends State<Header> {
           children: <Widget>[
             if (doctorData != null) ...[
               Text(
-                'Welcome, ${doctorData!['docName']}',
+                'Welcome, ${doctorData?['docName']}',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               Text(

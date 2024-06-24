@@ -45,38 +45,8 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: FutureBuilder<dynamic>(
-          future: getDoctorData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text(
-                'Loading...',
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              );
-            } else if (snapshot.hasError) {
-              return const Text(
-                'Error',
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              );
-            } else {
-              return Text(
-                'Welcome ${snapshot.data}',
-                style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              );
-            }
-          },
-        ),
-        backgroundColor: Colors.blueAccent,
-        automaticallyImplyLeading: false,
+        title: AppStyle.bold(title: "Doctor Profile", color: Colors.white),
+        backgroundColor: AppColors.primaryColor,
       ),
       body: SingleChildScrollView(
         child: Padding(

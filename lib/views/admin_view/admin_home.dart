@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class AdminHomeView extends StatelessWidget {
   final int numAppointments;
@@ -7,11 +6,11 @@ class AdminHomeView extends StatelessWidget {
   final int numPatients;
 
   const AdminHomeView({
-    Key? key,
+    super.key,
     required this.numAppointments,
     required this.numDoctors,
     required this.numPatients,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

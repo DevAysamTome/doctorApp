@@ -23,7 +23,7 @@ class _AddDoctorFormState extends State<AddDoctorForm> {
   String? _selectedCity;
   String? _selectedSpecialty;
 
-  final List<String> cities = ['Tulkarm', 'Jenin', 'Nablus', 'Ramallah'];
+  final List<String> cities = ['Tulkarm', 'Jenin', 'Nablus'];
   final List<String> specialties = [
     'Dentist',
     'Ear and throat',
@@ -54,7 +54,7 @@ class _AddDoctorFormState extends State<AddDoctorForm> {
         'docid': userCredential.user!.uid,
         'docLat': _latController.text,
         'docLong': _longController.text,
-        'docRatign': 0
+        'docRating': 0
       });
 
       // Clear the text fields after adding the doctor
@@ -76,7 +76,7 @@ class _AddDoctorFormState extends State<AddDoctorForm> {
       print('Error adding doctor: $e');
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Failed to add doctor. Please try again.'),
+        content: Text('The email address is already in use by another account'),
       ));
     }
   }

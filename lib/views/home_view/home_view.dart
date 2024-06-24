@@ -1,12 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:test_app/consts/consts.dart';
-import 'package:test_app/controllers/auth_controllers.dart';
-import '../../controllers/home_controller.dart';
-import '../../lists.dart';
-import '../../res/components/custom_textfield.dart';
+import 'package:test_app/controllers/home_controller.dart';
+import 'package:test_app/lists.dart';
+import 'package:test_app/res/components/custom_textfield.dart';
+import '../../consts/consts.dart';
 import '../category_details_view/category_details_view.dart';
 import '../doctor_profile_view/doctor_profile_view.dart';
 import '../search_view.dart';
@@ -25,49 +23,60 @@ class _HomeViewState extends State<HomeView> {
   String? _selectedCity;
   String? _selectedSpecialization;
 
+  HomeController _controller = Get.put(HomeController());
   final TextEditingController _searchQueryController = TextEditingController();
-  final HomeController _controller = Get.put(HomeController());
 
   @override
   void initState() {
     super.initState();
-    // Fetch cities and specializations from Firebase
     _fetchCities();
     _fetchSpecializations();
   }
 
+  @override
+  void dispose() {
+    _searchQueryController.dispose(); // Dispose text editing controller
+    super.dispose();
+  }
+
   Future<void> _fetchCities() async {
-    QuerySnapshot citySnapshot =
-        await FirebaseFirestore.instance.collection('doctors').get();
+    try {
+      QuerySnapshot citySnapshot =
+          await FirebaseFirestore.instance.collection('doctors').get();
 
-    Set<String> uniqueCities = <String>{};
-    for (var doc in citySnapshot.docs) {
-      uniqueCities.add(doc['docAddress'] as String);
+      if (!mounted) return; // Check if widget is still mounted
+
+      Set<String> uniqueCities = <String>{};
+      for (var doc in citySnapshot.docs) {
+        uniqueCities.add(doc['docAddress'] as String);
+      }
+
+      setState(() {
+        _cities = uniqueCities.toList();
+      });
+    } catch (e) {
+      print('Error fetching cities: $e');
     }
-
-    setState(() {
-      _cities = uniqueCities.toList();
-    });
   }
 
   Future<void> _fetchSpecializations() async {
-    QuerySnapshot specializationSnapshot =
-        await FirebaseFirestore.instance.collection('doctors').get();
+    try {
+      QuerySnapshot specializationSnapshot =
+          await FirebaseFirestore.instance.collection('doctors').get();
 
-    Set<String> uniqueSpecializ = <String>{};
-    for (var doc in specializationSnapshot.docs) {
-      uniqueSpecializ.add(doc['docCategory'] as String);
-    }
+      if (!mounted) return; // Check if widget is still mounted
 
-    void setState(fn) {
-      if (mounted) {
-        super.setState(fn);
+      Set<String> uniqueSpecializ = <String>{};
+      for (var doc in specializationSnapshot.docs) {
+        uniqueSpecializ.add(doc['docCategory'] as String);
       }
-    }
 
-    setState(() {
-      _specializations = uniqueSpecializ.toList();
-    });
+      setState(() {
+        _specializations = uniqueSpecializ.toList();
+      });
+    } catch (e) {
+      print('Error fetching specializations: $e');
+    }
   }
 
   void _showAllDoctors() {
@@ -160,7 +169,7 @@ class _HomeViewState extends State<HomeView> {
               ),
               const SizedBox(height: 20),
               SizedBox(
-                height: 90,
+                height: 100,
                 child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
@@ -207,70 +216,8 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
               const SizedBox(height: 20),
-              FutureBuilder<QuerySnapshot>(
-                future: _controller.getDoctorList(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else {
-                    var data = snapshot.data?.docs;
-
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 8.0,
-                        mainAxisSpacing: 8.0,
-                      ),
-                      itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Get.to(() => DoctorProfileView(
-                                  doc: data[index],
-                                ));
-                          },
-                          child: Container(
-                            clipBehavior: Clip.hardEdge,
-                            decoration: BoxDecoration(
-                              color: AppColors.bgDarkColor,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            margin: const EdgeInsets.all(8),
-                            height: 200,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: double.infinity,
-                                    alignment: Alignment.center,
-                                    color: Colors.blue,
-                                    child: Image.asset(
-                                      AppAssets.imgSignup,
-                                      width: 100,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  AppStyle.normal(
-                                      title: data![index]['docName']),
-                                  AppStyle.normal(
-                                      title: data[index]['docCategory'],
-                                      color: Colors.black54),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: data?.length,
-                    );
-                  }
-                },
+              DoctorGridView(
+                controller: _controller,
               ),
               const SizedBox(height: 5),
               GestureDetector(
@@ -288,6 +235,129 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class DoctorGridView extends StatelessWidget {
+  final HomeController controller;
+
+  const DoctorGridView({Key? key, required this.controller}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<QuerySnapshot>(
+      future: controller.getDoctorList(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (snapshot.hasError) {
+          return const Center(
+            child: Text('Error fetching data'),
+          );
+        }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const Center(
+            child: Text('No doctors found'),
+          );
+        }
+
+        var data = snapshot.data!.docs;
+
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 8.0,
+            mainAxisSpacing: 8.0,
+          ),
+          itemBuilder: (BuildContext context, int index) {
+            // English value from Firestore
+            String englishCategory = data[index]['docCategory'];
+
+            // Define Arabic translations based on English values
+            String arabicCategory = '';
+            switch (englishCategory) {
+              case 'Dentist':
+                arabicCategory = 'طبيب اسنان';
+                break;
+              case 'Ear and throat':
+                arabicCategory = 'طبيب اذن وحنجرة';
+                break;
+              case 'Pediatrician':
+                arabicCategory = 'طبيب اطفال';
+                break;
+              case 'Nerves':
+                arabicCategory = 'طبيب اعصاب';
+                break;
+              // Add more cases as needed for other categories
+              default:
+                arabicCategory = 'تصنيف غير معروف';
+                break;
+            }
+
+            return GestureDetector(
+              onTap: () {
+                Get.to(() => DoctorProfileView(
+                      doc: data[index],
+                    ));
+              },
+              child: Container(
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  color: AppColors.bgDarkColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                margin: const EdgeInsets.all(8),
+                height: 400,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        color: Colors.blue,
+                        child: Image.asset(
+                          AppAssets.imgSignup,
+                          width: 90,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      AppStyle.normal(
+                        title: data[index]['docName'],
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        englishCategory,
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: AppSize.size16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        arabicCategory, // Display Arabic translation here
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: AppSize.size16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+          itemCount: 4,
+        );
+      },
     );
   }
 }

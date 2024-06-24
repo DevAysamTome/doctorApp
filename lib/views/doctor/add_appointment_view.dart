@@ -66,7 +66,7 @@ class _DoctorAppointmentScreenState extends State<DoctorAppointmentScreen> {
                 DateTime? pickedDate = await showDatePicker(
                   context: context,
                   initialDate: selectedDate,
-                  firstDate: DateTime(2020),
+                  firstDate: DateTime.now(),
                   lastDate: DateTime(2030),
                 );
                 if (pickedDate != null && pickedDate != selectedDate) {

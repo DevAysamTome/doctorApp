@@ -4,15 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:test_app/consts/colors.dart';
 import 'package:test_app/res/components/waiting_screen.dart';
-import 'package:test_app/views/login.dart';
 import 'DoctorListPage.dart';
 import 'PatientListPage.dart';
 import 'add_doctor_form.dart';
 
 class AdminView extends StatefulWidget {
-  const AdminView({Key? key}) : super(key: key);
+  const AdminView({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _AdminViewState createState() => _AdminViewState();
 }
 
@@ -48,7 +48,6 @@ class _AdminViewState extends State<AdminView> {
       // Update the UI
       setState(() {});
     } catch (e) {
-      print('Error fetching data: $e');
       // Handle error, e.g., show a message to the user
     }
   }

@@ -30,7 +30,7 @@ class _CategoryViewState extends State<CategoryView> {
         _fetchCategoryCount('Pediatrician'),
         _fetchCategoryCount('Nerves'),
         _fetchCategoryCount('Dentist'),
-        _fetchCategoryCount('Ear'),
+        _fetchCategoryCount('Ear and throat'),
       ]);
 
       setState(() {
@@ -59,7 +59,7 @@ class _CategoryViewState extends State<CategoryView> {
       'Pediatrician': _numSpeicalPediatrician,
       'Nerves': _numSpeicalNerves,
       'Dentist': _numSpeicalDentist,
-      'Ear': _numSpeicalEar,
+      'Ear and throat': _numSpeicalEar,
     };
 
     return Scaffold(

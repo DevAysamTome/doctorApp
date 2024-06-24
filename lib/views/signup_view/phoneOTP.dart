@@ -10,9 +10,18 @@ class PhoneOTPVerification extends StatefulWidget {
   final String fullname;
   final String email;
   final String password;
+  final String address;
+  final String dateOfBirth;
+  final String gender;
 
-  PhoneOTPVerification(
-      {required this.fullname, required this.email, required this.password});
+  PhoneOTPVerification({
+    required this.fullname,
+    required this.email,
+    required this.password,
+    required this.address,
+    required this.dateOfBirth,
+    required this.gender,
+  });
 
   @override
   _PhoneOTPVerificationState createState() => _PhoneOTPVerificationState();
@@ -24,12 +33,6 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
   bool visible = false;
   String verificationId = "";
   String countryCode = "+970";
-  @override
-  void dispose() {
-    phoneNumber.dispose();
-    otp.dispose();
-    super.dispose();
-  }
 
   void setVerificationId(String id) {
     setState(() {
@@ -51,10 +54,7 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  !visible
-                      ? AppAssets.otpscreen1
-                      : AppAssets
-                          .otpscreen2, // Add your verification image here
+                  !visible ? AppAssets.otpscreen1 : AppAssets.otpscreen2,
                   height: 250,
                 ),
                 SizedBox(height: 20),
@@ -167,6 +167,9 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
             phoneNumber.text,
             otp.text,
             verificationId, // Pass the verificationId here
+            widget.address,
+            widget.dateOfBirth,
+            widget.gender,
             context,
           );
         },

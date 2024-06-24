@@ -21,6 +21,8 @@ class AuthController extends GetxController {
   var timingController = TextEditingController();
   var categoryController = TextEditingController();
   var addressController = TextEditingController();
+  var dateOfBirthController = TextEditingController();
+  var gender = ''.obs;
   String? errorMessage;
   isUserAlreadyLoggedIn() async {
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
@@ -44,13 +46,19 @@ class AuthController extends GetxController {
   }
 
   loginUser() async {
-    
     userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text, password: passwordController.text);
   }
 
-  Future<String?> signupUser(String fullname, String email, String password,
-      String phoneNumber) async {
+  Future<String?> signupUser(
+    String fullname,
+    String email,
+    String password,
+    String phoneNumber,
+    String address,
+    String dateOfBirth,
+    String gender,
+  ) async {
     try {
       userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -59,11 +67,13 @@ class AuthController extends GetxController {
       );
       if (userCredential != null) {
         await storeUserData(
-          userCredential!.user!.uid,
-          fullnameController.text,
-          emailController.text,
-          phoneController.text,
-        );
+            userCredential!.user!.uid,
+            fullnameController.text,
+            emailController.text,
+            phoneController.text,
+            addressController.text,
+            dateOfBirthController.text,
+            gender);
         return "success";
       }
     } catch (error) {
@@ -83,14 +93,24 @@ class AuthController extends GetxController {
   }
 
   Future<void> storeUserData(
-      String uid, String fullname, String email, String phone) async {
+    String uid,
+    String fullname,
+    String email,
+    String phone,
+    String address,
+    String dateOfBirth,
+    String gender,
+  ) async {
     var store = FirebaseFirestore.instance.collection('user').doc(uid);
 
     await store.set({
       'userid': FirebaseAuth.instance.currentUser?.uid,
       'name': fullname,
       'email': email,
-      'phone': phone
+      'phone': phone,
+      'address': address,
+      'dateOfBirth': dateOfBirth,
+      'gender': gender,
     });
   }
 
@@ -166,8 +186,17 @@ class AuthController extends GetxController {
     );
   }
 
-  authenticate(String email, String password, String name, String phoneNumber,
-      String otp, String verificationId, BuildContext context) async {
+  authenticate(
+      String email,
+      String password,
+      String name,
+      String phoneNumber,
+      String otp,
+      String verificationId,
+      String address,
+      String dateOfBirth,
+      String gender,
+      BuildContext context) async {
     try {
       // Create a new user with email and password
       UserCredential userCredential = await _auth
@@ -185,6 +214,9 @@ class AuthController extends GetxController {
         'email': email,
         'name': name,
         'phone': phoneNumber,
+        'address': address,
+        'dateOfBirth': dateOfBirth,
+        'gender': gender,
         'userid': userCredential.user!.uid,
       });
 
