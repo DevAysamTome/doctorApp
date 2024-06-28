@@ -1,11 +1,14 @@
+// ignore_for_file: file_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app/consts/colors.dart';
 
 class DoctorListPage extends StatefulWidget {
-  const DoctorListPage({Key? key}) : super(key: key);
+  const DoctorListPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _DoctorListPageState createState() => _DoctorListPageState();
 }
 
@@ -31,7 +34,6 @@ class _DoctorListPageState extends State<DoctorListPage> {
         _isLoading = false;
       });
     } catch (error) {
-      print('Error fetching data: $error');
       setState(() {
         _isLoading = false;
       });
@@ -56,7 +58,7 @@ class _DoctorListPageState extends State<DoctorListPage> {
   }
 
   Widget _buildLoadingIndicator() {
-    return Center(
+    return const Center(
       child: CircularProgressIndicator(),
     );
   }
@@ -67,16 +69,16 @@ class _DoctorListPageState extends State<DoctorListPage> {
       itemBuilder: (context, index) {
         final doctor = _doctors[index];
         return Card(
-          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             title: Text(
               doctor['docName'] ?? '',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Text(doctor['docCategory'] ?? ''),
             trailing: IconButton(
-              icon: Icon(Icons.delete),
+              icon: const Icon(Icons.delete),
               onPressed: () {
                 _confirmDeleteDoctor(context, doctor);
               },

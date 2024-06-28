@@ -67,7 +67,6 @@ class SettingsController extends GetxController {
       // Display success message or navigate to success view
       Get.snackbar("Success", "Password changed successfully");
     } catch (error) {
-      print("Error changing password: $error");
       // Display error message to user
       Get.snackbar("Error", "Failed to change password");
     }

@@ -1,9 +1,8 @@
+// ignore_for_file: file_names
+
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:test_app/consts/consts.dart';
-import 'package:test_app/consts/images.dart';
 import 'package:test_app/controllers/auth_controllers.dart';
 
 class PhoneOTPVerification extends StatefulWidget {
@@ -14,7 +13,7 @@ class PhoneOTPVerification extends StatefulWidget {
   final String dateOfBirth;
   final String gender;
 
-  PhoneOTPVerification({
+   const PhoneOTPVerification({super.key, 
     required this.fullname,
     required this.email,
     required this.password,
@@ -24,6 +23,7 @@ class PhoneOTPVerification extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _PhoneOTPVerificationState createState() => _PhoneOTPVerificationState();
 }
 
@@ -44,7 +44,7 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("OTP Verification"),
+        title: const Text("OTP Verification"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -57,8 +57,8 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
                   !visible ? AppAssets.otpscreen1 : AppAssets.otpscreen2,
                   height: 250,
                 ),
-                SizedBox(height: 20),
-                Text(
+                const SizedBox(height: 20),
+                const Text(
                   "Phone Verification",
                   style: TextStyle(
                     fontSize: 24,
@@ -71,7 +71,7 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
                       : "Enter the verification code we just sent to your number  ${phoneNumber.text}",
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 if (!visible)
                   Row(
                     children: [
@@ -80,7 +80,7 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
                           countryCode = code.dialCode!;
                         },
                         initialSelection: 'PS',
-                        favorite: ['+972', 'PS'],
+                        favorite: const ['+972', 'PS'],
                       ),
                       Expanded(
                         child: inputTextField(
@@ -104,19 +104,17 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
                       fieldWidth: 40,
                       activeFillColor: Colors.white,
                     ),
-                    animationDuration: Duration(milliseconds: 300),
+                    animationDuration: const Duration(milliseconds: 300),
                     backgroundColor: Colors.transparent,
                     enableActiveFill: true,
                     controller: otp,
                     onCompleted: (v) {
-                      print("Completed");
                     },
                     onChanged: (value) {
-                      print(value);
                       setState(() {});
                     },
                   ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 if (!visible)
                   SendOTPButton("Send the Code")
                 else
@@ -128,7 +126,7 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
                         visible = false;
                       });
                     },
-                    child: Text("Edit phone number?"),
+                    child: const Text("Edit phone number?"),
                   ),
               ],
             ),
@@ -138,6 +136,7 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   Widget SendOTPButton(String text) => ElevatedButton(
         onPressed: () async {
           setState(() {
@@ -147,17 +146,18 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
               .sendOTP(phoneNumber.text, setVerificationId, context);
         },
         style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-            textStyle: TextStyle(fontSize: 21, color: Colors.white),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+            textStyle: const TextStyle(fontSize: 21, color: Colors.white),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
             backgroundColor: Colors.blueAccent,
             foregroundColor: Colors.white,
-            fixedSize: Size(200, 70)),
+            fixedSize: const Size(200, 70)),
         child: Text(text),
       );
 
+  // ignore: non_constant_identifier_names
   Widget SubmitOTPButton(String text) => ElevatedButton(
         onPressed: () async {
           await AuthController().authenticate(
@@ -174,8 +174,8 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
           );
         },
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-          textStyle: TextStyle(fontSize: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+          textStyle: const TextStyle(fontSize: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),

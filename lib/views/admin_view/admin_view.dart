@@ -17,6 +17,7 @@ class AdminView extends StatefulWidget {
 }
 
 class _AdminViewState extends State<AdminView> {
+  // State variables to store counts and selected index for navigation
   int _numAppointments = 0;
   int _numDoctors = 0;
   int _numPatients = 0;
@@ -25,9 +26,11 @@ class _AdminViewState extends State<AdminView> {
   @override
   void initState() {
     super.initState();
+    // Fetch initial data on load
     _fetchData();
   }
 
+  // Fetch data from Firestore and update state variables
   Future<void> _fetchData() async {
     try {
       // Fetch number of appointments
@@ -52,6 +55,7 @@ class _AdminViewState extends State<AdminView> {
     }
   }
 
+  // Handle bottom navigation item tap
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -60,11 +64,12 @@ class _AdminViewState extends State<AdminView> {
 
   @override
   Widget build(BuildContext context) {
+    // List of screens to display based on selected index
     List<Widget> screenList = [
       _buildAdminHomeView(),
       const AddDoctorForm(),
       const DoctorListPage(),
-      PatientListPage(),
+      const PatientListPage(),
     ];
 
     return Scaffold(
@@ -75,7 +80,7 @@ class _AdminViewState extends State<AdminView> {
         ),
         automaticallyImplyLeading: false,
         backgroundColor: AppColors.primaryColor,
-        centerTitle: true, // Remove back arrow
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -130,47 +135,53 @@ class _AdminViewState extends State<AdminView> {
     );
   }
 
+  // Build the admin home view displaying statistics
   Widget _buildAdminHomeView() {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: SingleChildScrollView(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const SizedBox(height: 20),
-          Center(
-            child: Text(
-              'Welcome!',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primaryColor,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            Center(
+              child: Text(
+                'Welcome!',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryColor,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 40),
-          _buildStatisticCard(
-            icon: Icons.event,
-            title: 'Number of Appointments',
-            value: _numAppointments.toString(),
-          ),
-          const SizedBox(height: 20),
-          _buildStatisticCard(
-            icon: Icons.people,
-            title: 'Number of Doctors',
-            value: _numDoctors.toString(),
-          ),
-          const SizedBox(height: 20),
-          _buildStatisticCard(
-            icon: Icons.people_outline,
-            title: 'Number of Patients',
-            value: _numPatients.toString(),
-          ),
-          const SizedBox(height: 40),
-          const SizedBox(height: 20),
-        ]),
+            const SizedBox(height: 40),
+            // Statistic cards for appointments, doctors, and patients
+            _buildStatisticCard(
+              icon: Icons.event,
+              title: 'Number of Appointments',
+              value: _numAppointments.toString(),
+            ),
+            const SizedBox(height: 20),
+            _buildStatisticCard(
+              icon: Icons.people,
+              title: 'Number of Doctors',
+              value: _numDoctors.toString(),
+            ),
+            const SizedBox(height: 20),
+            _buildStatisticCard(
+              icon: Icons.people_outline,
+              title: 'Number of Patients',
+              value: _numPatients.toString(),
+            ),
+            const SizedBox(height: 40),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
 
+  // Build a statistic card with an icon, title, and value
   Widget _buildStatisticCard({
     required IconData icon,
     required String title,

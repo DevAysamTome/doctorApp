@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ChangePasswordForm extends StatefulWidget {
-  const ChangePasswordForm({Key? key}) : super(key: key);
+  const ChangePasswordForm({super.key});
 
   @override
   _ChangePasswordFormState createState() => _ChangePasswordFormState();
@@ -39,7 +39,25 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
 
         // Change password
         await _currentUser!.updatePassword(newPassword);
-        print("Password changed successfully");
+
+        // Show success alert dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Success"),
+              content: const Text("Password changed successfully"),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       } else {
         print("User not authenticated");
       }

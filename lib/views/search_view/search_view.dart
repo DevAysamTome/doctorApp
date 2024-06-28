@@ -1,16 +1,13 @@
-import 'dart:developer';
+import 'dart:developer'; // For logging
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:test_app/consts/consts.dart';
-import 'package:test_app/views/doctor_profile_view/doctor_profile_view.dart';
-import 'package:test_app/consts/images.dart';
-import 'package:velocity_x/velocity_x.dart';
+import 'package:test_app/consts/consts.dart'; // Importing constants for styling
+import 'package:test_app/views/doctor_profile_view/doctor_profile_view.dart'; // Importing DoctorProfileView
 
 class SearchView extends StatelessWidget {
-  final String searchQuery;
-  const SearchView({Key? key, required this.searchQuery}) : super(key: key);
+  final String searchQuery; // The search query entered by the user
+  const SearchView({super.key,  required this.searchQuery});
 
   @override
   Widget build(BuildContext context) {
@@ -31,18 +28,22 @@ class SearchView extends StatelessWidget {
             .get(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
+            // While waiting for data, show a loading indicator
             return const Center(
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasError) {
+            // If there's an error fetching data, display an error message
             return Center(
               child: Text('Error: ${snapshot.error}'),
             );
           } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            // If no data is found or the result is empty, display a message
             return const Center(
               child: Text("No doctors found"),
             );
           } else {
+            // If data is successfully fetched, display the search results
             return Padding(
               padding: const EdgeInsets.all(10.0),
               child: GridView.builder(
@@ -54,13 +55,17 @@ class SearchView extends StatelessWidget {
                 ),
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (BuildContext context, int index) {
-                  var doc = snapshot.data!.docs[index];
+                  var doc = snapshot.data!.docs[index]; // Current document
+                  
+                  // Logging document data for debugging purposes
                   log(doc.data().toString());
+                  
                   return GestureDetector(
                     onTap: () {
+                      // Navigate to the DoctorProfileView when a doctor is tapped
                       Get.to(() => DoctorProfileView(
-                            doc: doc,
-                          ));
+                        doc: doc,
+                      ));
                     },
                     child: Container(
                       clipBehavior: Clip.hardEdge,
@@ -74,6 +79,7 @@ class SearchView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Displaying doctor's image
                           Container(
                             alignment: Alignment.center,
                             color: Colors.blue,
@@ -84,7 +90,9 @@ class SearchView extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 5),
+                          // Displaying doctor's name
                           AppStyle.normal(title: doc['docName']),
+                          // Displaying doctor's rating using VxRating widget
                           VxRating(
                             selectionColor: Colors.yellow,
                             onRatingUpdate: (value) {},

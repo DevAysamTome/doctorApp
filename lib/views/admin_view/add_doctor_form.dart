@@ -4,14 +4,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:test_app/consts/colors.dart';
 
 class AddDoctorForm extends StatefulWidget {
-  const AddDoctorForm({Key? key});
+  const AddDoctorForm({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _AddDoctorFormState createState() => _AddDoctorFormState();
 }
 
 class _AddDoctorFormState extends State<AddDoctorForm> {
+  // Firebase Authentication instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // Controllers for form fields
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -20,9 +24,11 @@ class _AddDoctorFormState extends State<AddDoctorForm> {
   final TextEditingController _latController = TextEditingController();
   final TextEditingController _longController = TextEditingController();
 
+  // Variables for selected city and specialty
   String? _selectedCity;
   String? _selectedSpecialty;
 
+  // List of available cities and specialties
   final List<String> cities = ['Tulkarm', 'Jenin', 'Nablus'];
   final List<String> specialties = [
     'Dentist',
@@ -31,16 +37,17 @@ class _AddDoctorFormState extends State<AddDoctorForm> {
     'Nerves'
   ];
 
+  // Method to add a doctor to Firebase
   Future<void> _addDoctor() async {
     try {
-      // Step 1: Create user in Firebase Authentication
+      // Create user in Firebase Authentication
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
 
-      // Step 2: Add doctor details to Firestore
+      // Add doctor details to Firestore
       await FirebaseFirestore.instance
           .collection('doctors')
           .doc(userCredential.user!.uid)
@@ -73,7 +80,6 @@ class _AddDoctorFormState extends State<AddDoctorForm> {
         content: Text('Doctor added successfully'),
       ));
     } catch (e) {
-      print('Error adding doctor: $e');
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('The email address is already in use by another account'),
@@ -96,37 +102,37 @@ class _AddDoctorFormState extends State<AddDoctorForm> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: _nameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Name',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextFormField(
               controller: _emailController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextFormField(
               controller: _passwordController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
                 border: OutlineInputBorder(),
               ),
               obscureText: true,
             ),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Select City',
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             DropdownButtonFormField<String>(
               value: _selectedCity,
               onChanged: (newValue) {
@@ -140,16 +146,16 @@ class _AddDoctorFormState extends State<AddDoctorForm> {
                   child: Text(city),
                 );
               }).toList(),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Select Specialty',
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             DropdownButtonFormField<String>(
               value: _selectedSpecialty,
               onChanged: (newValue) {
@@ -163,38 +169,38 @@ class _AddDoctorFormState extends State<AddDoctorForm> {
                   child: Text(specialty),
                 );
               }).toList(),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: _latController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Lat for Clinic',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: _longController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Long for Clinic',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: _phoneController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Phone',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: _descController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Description',
                 border: OutlineInputBorder(),
               ),

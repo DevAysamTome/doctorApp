@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:test_app/views/doctor/pateintList.dart';
 import 'package:test_app/views/settings_view/settings_view.dart';
@@ -16,7 +18,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   static final List<Widget> _widgetOptions = <Widget>[
      const DoctorHomeScreen(), // Replace Header() with your home screen widget
-    PatientList(), // Replace PatientList() with your patients screen widget
+    const PatientList(), // Replace PatientList() with your patients screen widget
     const SettingsView(), // Replace SettingsScreen() with your settings screen widget
   ];
 

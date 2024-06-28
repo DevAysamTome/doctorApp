@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import '../../consts/consts.dart';
@@ -8,7 +7,7 @@ import '../appointment_details_view/appointment_details_view.dart';
 class AppointmentView extends StatelessWidget {
   final bool isDoctor;
 
-  const AppointmentView({Key? key, required this.isDoctor}) : super(key: key);
+  const AppointmentView({super.key, required this.isDoctor});
 
   @override
   Widget build(BuildContext context) {
@@ -31,20 +30,25 @@ class AppointmentView extends StatelessWidget {
       body: FutureBuilder<QuerySnapshot>(
         future: controller.getAppointment(isDoctor),
         builder: (context, snapshot) {
+          // Show loading spinner while waiting for data
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(
                 color: Colors.teal,
               ),
             );
-          } else if (snapshot.hasError) {
+          }
+          // Display error message if an error occurs
+          else if (snapshot.hasError) {
             return Center(
               child: Text(
                 'Error: ${snapshot.error}',
                 style: const TextStyle(color: Colors.red, fontSize: 16),
               ),
             );
-          } else {
+          }
+          // Display data if available
+          else {
             var data = snapshot.data?.docs;
             if (data == null || data.isEmpty) {
               return const Center(

@@ -151,7 +151,6 @@ class AuthController extends GetxController {
       }
     } catch (error) {
       // Handle password change errors
-      print('Error changing password: $error');
       return 'Failed to change password. Please try again.';
     }
   }
@@ -160,7 +159,7 @@ class AuthController extends GetxController {
       BuildContext context) async {
     await _auth.verifyPhoneNumber(
       phoneNumber: '+970$phoneNumber',
-      timeout: Duration(seconds: 60),
+      timeout: const Duration(seconds: 60),
       verificationCompleted: (PhoneAuthCredential credential) async {
         // Auto-retrieve or instant verification
         UserCredential userCredential =

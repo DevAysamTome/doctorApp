@@ -1,17 +1,18 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: avoid_print
+
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:test_app/controllers/home_controller.dart';
-import 'package:test_app/lists.dart';
+import 'package:test_app/lists.dart'; // Assuming this contains lists like iconList, iconTitleList
 import 'package:test_app/res/components/custom_textfield.dart';
-import '../../consts/consts.dart';
+import '../../consts/consts.dart'; // Assuming this contains AppSize, AppColors, AppAssets, etc.
 import '../category_details_view/category_details_view.dart';
 import '../doctor_profile_view/doctor_profile_view.dart';
 import '../search_view.dart';
 import 'all_doctors_view.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({super.key});
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -23,14 +24,15 @@ class _HomeViewState extends State<HomeView> {
   String? _selectedCity;
   String? _selectedSpecialization;
 
-  HomeController _controller = Get.put(HomeController());
+  final HomeController _controller =
+      Get.put(HomeController()); // Using GetX for state management
   final TextEditingController _searchQueryController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _fetchCities();
-    _fetchSpecializations();
+    _fetchCities(); // Fetch list of cities
+    _fetchSpecializations(); // Fetch list of specializations
   }
 
   @override
@@ -52,7 +54,7 @@ class _HomeViewState extends State<HomeView> {
       }
 
       setState(() {
-        _cities = uniqueCities.toList();
+        _cities = uniqueCities.toList(); // Update cities list in state
       });
     } catch (e) {
       print('Error fetching cities: $e');
@@ -72,7 +74,8 @@ class _HomeViewState extends State<HomeView> {
       }
 
       setState(() {
-        _specializations = uniqueSpecializ.toList();
+        _specializations =
+            uniqueSpecializ.toList(); // Update specializations list in state
       });
     } catch (e) {
       print('Error fetching specializations: $e');
@@ -81,7 +84,7 @@ class _HomeViewState extends State<HomeView> {
 
   void _showAllDoctors() {
     // Navigate to the page containing all doctors
-    Get.to(() => AllDoctorsView());
+    Get.to(() => const AllDoctorsView());
   }
 
   @override
@@ -111,7 +114,7 @@ class _HomeViewState extends State<HomeView> {
                       value: _selectedCity,
                       onChanged: (value) {
                         setState(() {
-                          _selectedCity = value;
+                          _selectedCity = value; // Update selected city
                         });
                       },
                       items: [
@@ -122,9 +125,9 @@ class _HomeViewState extends State<HomeView> {
                         ..._cities.map((city) {
                           return DropdownMenuItem(
                             value: city,
-                            child: Text(city),
+                            child: Text(city), // Display city name in dropdown
                           );
-                        }).toList(),
+                        }),
                       ],
                     ),
                   ),
@@ -135,7 +138,8 @@ class _HomeViewState extends State<HomeView> {
                       value: _selectedSpecialization,
                       onChanged: (value) {
                         setState(() {
-                          _selectedSpecialization = value;
+                          _selectedSpecialization =
+                              value; // Update selected specialization
                         });
                       },
                       items: [
@@ -146,9 +150,10 @@ class _HomeViewState extends State<HomeView> {
                         ..._specializations.map((specialization) {
                           return DropdownMenuItem(
                             value: specialization,
-                            child: Text(specialization),
+                            child: Text(
+                                specialization), // Display specialization name in dropdown
                           );
-                        }).toList(),
+                        }),
                       ],
                     ),
                   ),
@@ -190,7 +195,8 @@ class _HomeViewState extends State<HomeView> {
                         child: Column(
                           children: [
                             Image.asset(
-                              iconList[index],
+                              iconList[
+                                  index], // Assuming iconList contains image paths
                               width: 30,
                               color: Colors.white,
                             ),
@@ -242,7 +248,7 @@ class _HomeViewState extends State<HomeView> {
 class DoctorGridView extends StatelessWidget {
   final HomeController controller;
 
-  const DoctorGridView({Key? key, required this.controller}) : super(key: key);
+  const DoctorGridView({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -334,7 +340,7 @@ class DoctorGridView extends StatelessWidget {
                       const SizedBox(height: 5),
                       Text(
                         englishCategory,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.blue,
                           fontSize: AppSize.size16,
                           fontWeight: FontWeight.bold,
@@ -343,7 +349,7 @@ class DoctorGridView extends StatelessWidget {
                       const SizedBox(height: 5),
                       Text(
                         arabicCategory, // Display Arabic translation here
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black,
                           fontSize: AppSize.size16,
                           fontWeight: FontWeight.bold,

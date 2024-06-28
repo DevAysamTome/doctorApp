@@ -1,8 +1,12 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:test_app/consts/colors.dart';
 import 'package:test_app/views/login_view/login_view.dart'; // Import the home screen
 
 class OnboardingScreen extends StatelessWidget {
+  const OnboardingScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,9 +22,9 @@ class OnboardingScreen extends StatelessWidget {
               'assets/images/welcomescreen.png', // Replace with your image path
               height: 300,
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             // Onboarding Title
-            Text(
+            const Text(
               'Find the Right Doctor',
               style: TextStyle(
                 fontSize: 24,
@@ -28,9 +32,9 @@ class OnboardingScreen extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Onboarding Description
-            Text(
+            const Text(
               'Book appointments with ease and find the best doctors near you.',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -38,7 +42,7 @@ class OnboardingScreen extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             // Continue Button
             SizedBox(
               width: double.infinity,
@@ -48,22 +52,22 @@ class OnboardingScreen extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            LoginView()), // Navigate to the home screen
+                            const LoginView()), // Navigate to the home screen
                   );
                 },
-                child: Text(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: AppColors.primaryColor,
+                  backgroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+                child: const Text(
                   'Get Started',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: AppColors.primaryColor,
-                  backgroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
                   ),
                 ),
               ),

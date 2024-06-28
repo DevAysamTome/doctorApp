@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -13,38 +15,45 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  Completer<GoogleMapController> _controller = Completer();
+  final Completer<GoogleMapController> _controller =
+      Completer(); // Completer to handle GoogleMapController asynchronously
 
-  static final CameraPosition _initialCameraPosition = CameraPosition(
-    target: LatLng(32.4324, 35.0856),
-    zoom: 14.4746,
+  static const CameraPosition _initialCameraPosition = CameraPosition(
+    target: LatLng(32.4324, 35.0856), // Initial center position of the map
+    zoom: 14.4746, // Initial zoom level of the map
   );
 
-  LatLng currentLocation = _initialCameraPosition.target;
-  Set<Marker> _markers = {};
+  LatLng currentLocation =
+      _initialCameraPosition.target; // Variable to store current location
+  final Set<Marker> _markers = {}; // Set to hold markers on the map
 
   @override
   void initState() {
     super.initState();
-    _fetchClinicLocations();
+    _fetchClinicLocations(); // Fetch clinic locations when the widget initializes
   }
 
   Future<void> _fetchClinicLocations() async {
-    final QuerySnapshot result =
-        await FirebaseFirestore.instance.collection('doctors').get();
+    final QuerySnapshot result = await FirebaseFirestore.instance
+        .collection('doctors')
+        .get(); // Fetch documents from Firestore collection
     final List<DocumentSnapshot> documents = result.docs;
 
     for (var doc in documents) {
-      final data = doc.data() as Map<String, dynamic>;
+      final data = doc.data() as Map<String, dynamic>; // Extract document data
       print('Fetched data: $data');
       if (data.containsKey('docLat') && data.containsKey('docLong')) {
         try {
-          double lat = double.parse(data['docLat']);
-          double lng = double.parse(data['docLong']);
+          double lat =
+              double.parse(data['docLat']); // Parse latitude from document data
+          double lng = double.parse(
+              data['docLong']); // Parse longitude from document data
           _setMarker(
-            LatLng(lat, lng),
-            data['docName'] ?? 'Unknown',
-            data['docCategory'] ?? 'Unknown',
+            LatLng(lat, lng), // Create LatLng object from parsed coordinates
+            data['docName'] ??
+                'Unknown', // Clinic name, default to 'Unknown' if not provided
+            data['docCategory'] ??
+                'Unknown', // Clinic category, default to 'Unknown' if not provided
           );
         } catch (e) {
           print('Error parsing coordinates: $e');
@@ -53,14 +62,14 @@ class _MapScreenState extends State<MapScreen> {
         print('Missing coordinates in data: $data');
       }
     }
-    setState(() {}); // Ensure the map is updated with new markers
+    setState(() {}); // Update the state to reflect new markers on the map
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Map"),
+        title: const Text("Map"),
       ),
       body: Stack(
         alignment: Alignment.center,
@@ -69,24 +78,27 @@ class _MapScreenState extends State<MapScreen> {
             initialCameraPosition: _initialCameraPosition,
             mapType: MapType.normal,
             onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
+              _controller.complete(
+                  controller); // Complete the Completer with the created GoogleMapController
             },
-            onCameraMove: (e) => currentLocation = e.target,
-            markers: _markers,
+            onCameraMove: (CameraPosition e) => currentLocation =
+                e.target, // Update currentLocation when the camera moves
+            markers: _markers, // Set of markers to display on the map
             onTap: (LatLng location) {
-              _setMarker(location, 'New Marker', '');
+              _setMarker(location, 'New Marker', ''); // Add a new marker on tap
             },
           ),
         ],
       ),
       floatingActionButton: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             FloatingActionButton(
-              onPressed: () => _getMyLocation(),
-              child: Icon(Icons.gps_fixed),
+              onPressed: () =>
+                  _getMyLocation(), // Fetch current location on button press
+              child: const Icon(Icons.gps_fixed),
             ),
           ],
         ),
@@ -95,39 +107,46 @@ class _MapScreenState extends State<MapScreen> {
         height: 20,
         alignment: Alignment.center,
         child: Text(
-            "lat: ${currentLocation.latitude}, long: ${currentLocation.longitude}"),
+            "lat: ${currentLocation.latitude}, long: ${currentLocation.longitude}"), // Display current latitude and longitude
       ),
     );
   }
 
   void _setMarker(LatLng location, String title, String snippet) {
     Marker newMarker = Marker(
-      markerId: MarkerId(location.toString()),
-      icon: BitmapDescriptor.defaultMarker,
-      position: location,
-      infoWindow: InfoWindow(title: title, snippet: snippet),
+      markerId: MarkerId(location.toString()), // Unique marker identifier
+      icon: BitmapDescriptor.defaultMarker, // Default marker icon
+      position: location, // Marker position
+      infoWindow:
+          InfoWindow(title: title, snippet: snippet), // Info window details
     );
     setState(() {
-      _markers.add(newMarker);
+      _markers.add(newMarker); // Add the new marker to the set of markers
       print('Marker added: ${newMarker.markerId}');
     });
   }
 
   Future<void> _getMyLocation() async {
-    LocationData _myLocation = await LocationService().getLocation();
+    LocationData myLocation = await LocationService()
+        .getLocation(); // Fetch current location using LocationService
     setState(() {
-      currentLocation = LatLng(_myLocation.latitude!, _myLocation.longitude!);
-      _setMarker(currentLocation, 'Current Location', '');
+      currentLocation = LatLng(
+          myLocation.latitude!,
+          myLocation
+              .longitude!); // Update currentLocation with fetched location
+      _setMarker(currentLocation, 'Current Location',
+          ''); // Add a marker for the current location
     });
-    _animateCamera(currentLocation);
+    _animateCamera(
+        currentLocation); // Animate the camera to the current location
   }
 
   Future<void> _animateCamera(LatLng location) async {
     final GoogleMapController controller = await _controller.future;
-    CameraPosition _cameraPosition = CameraPosition(
+    CameraPosition cameraPosition = CameraPosition(
       target: location,
       zoom: 13.00,
     );
-    controller.animateCamera(CameraUpdate.newCameraPosition(_cameraPosition));
+    controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 }

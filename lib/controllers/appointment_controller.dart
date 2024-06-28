@@ -71,7 +71,6 @@ class AppointmentController extends GetxController {
       // You can also add any additional logic here, like updating UI or notifying users
     } catch (e) {
       // Handle any errors that occur during the cancellation process
-      print("Error cancelling appointment: $e");
     }
   }
 }

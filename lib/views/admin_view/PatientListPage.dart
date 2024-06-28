@@ -1,9 +1,14 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:test_app/consts/colors.dart';
 
 class PatientListPage extends StatefulWidget {
+  const PatientListPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _PatientListPageState createState() => _PatientListPageState();
 }
 
@@ -17,6 +22,7 @@ class _PatientListPageState extends State<PatientListPage> {
     _fetchPatients();
   }
 
+  // Fetch patients data from Firestore
   Future<void> _fetchPatients() async {
     try {
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
@@ -30,7 +36,6 @@ class _PatientListPageState extends State<PatientListPage> {
       setState(() {
         isLoading = false;
       });
-      print("Error fetching patients: $e");
     }
   }
 
@@ -110,8 +115,7 @@ class _PatientListPageState extends State<PatientListPage> {
 class PatientDetailsPage extends StatelessWidget {
   final Map<String, dynamic> patientData;
 
-  const PatientDetailsPage({Key? key, required this.patientData})
-      : super(key: key);
+  const PatientDetailsPage({super.key, required this.patientData});
 
   @override
   Widget build(BuildContext context) {
@@ -185,6 +189,7 @@ class PatientDetailsPage extends StatelessWidget {
     );
   }
 
+  // Helper method to build an information row
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Row(
       children: [

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,7 +12,7 @@ import 'package:test_app/views/signup_view/phoneOTP.dart';
 import 'package:intl/intl.dart';
 
 class SignupView extends StatefulWidget {
-  const SignupView({Key? key}) : super(key: key);
+  const SignupView({super.key});
 
   @override
   State<SignupView> createState() => _SignupViewState();
@@ -20,6 +22,7 @@ class _SignupViewState extends State<SignupView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _dateOfBirthController = TextEditingController();
 
+  // Function to check if email already exists in Firestore
   Future<bool> checkEmailExists(String email) async {
     try {
       final querySnapshot = await FirebaseFirestore.instance
@@ -34,6 +37,7 @@ class _SignupViewState extends State<SignupView> {
     }
   }
 
+  // Function to show date picker and update date of birth field
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -51,12 +55,14 @@ class _SignupViewState extends State<SignupView> {
   @override
   Widget build(BuildContext context) {
     var controller = Get.put(AuthController());
+
     return Scaffold(
       body: Container(
         margin: const EdgeInsets.only(top: 40),
         padding: const EdgeInsets.all(8),
         child: Column(
           children: [
+            // Header with logo and signup text
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -83,6 +89,7 @@ class _SignupViewState extends State<SignupView> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+                      // Full Name TextFormField
                       TextFormField(
                         decoration: InputDecoration(
                           hintText: AppStrings.fullname,
@@ -96,6 +103,7 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 10),
+                      // Email TextFormField
                       TextFormField(
                         decoration: InputDecoration(
                           hintText: AppStrings.email,
@@ -112,6 +120,7 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 10),
+                      // Password TextFormField
                       TextFormField(
                         decoration: InputDecoration(
                           hintText: AppStrings.password,
@@ -129,8 +138,9 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 10),
+                      // Address TextFormField
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Address',
                         ),
                         controller: controller.addressController,
@@ -142,9 +152,10 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 10),
+                      // Date of Birth TextFormField with date picker
                       TextFormField(
                         controller: _dateOfBirthController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Date of Birth',
                         ),
                         readOnly: true,
@@ -157,8 +168,9 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 10),
+                      // Gender DropdownButtonFormField
                       DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Gender',
                         ),
                         items: ['Male', 'Female'].map((String value) {
@@ -178,6 +190,7 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 20),
+                      // Signup Button
                       CustomButton(
                         buttonText: AppStrings.signup,
                         onTap: () async {
@@ -185,11 +198,13 @@ class _SignupViewState extends State<SignupView> {
                             bool emailExists = await checkEmailExists(
                                 controller.emailController.text);
                             if (emailExists) {
+                              // Show error if email already exists
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Email already exists')),
+                                const SnackBar(
+                                    content: Text('Email already exists')),
                               );
                             } else {
-                              // Navigate to PhoneOTPVerification screen
+                              // Navigate to PhoneOTPVerification screen if validation succeeds
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => PhoneOTPVerification(
@@ -209,6 +224,7 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 20),
+                      // Already have account? Login here
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
-import '../../consts/images.dart';
+import '../../consts/images.dart'; // Replace with your project's imports
 
-// ignore: must_be_immutable
 class BookAppointmentView extends StatefulWidget {
   final String docId;
   final String docName;
   String? userid;
 
-  BookAppointmentView(
-      {super.key, required this.docId, required this.docName, this.userid});
+  BookAppointmentView({
+    Key? key,
+    required this.docId,
+    required this.docName,
+    this.userid,
+  }) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _BookAppointmentViewState createState() => _BookAppointmentViewState();
 }
 
@@ -45,7 +47,7 @@ class _BookAppointmentViewState extends State<BookAppointmentView> {
       DocumentSnapshot<Map<String, dynamic>> doc =
           await FirebaseFirestore.instance
               .collection('doctors')
-              .doc(widget.docId) // Assuming docName is the doctor's ID
+              .doc(widget.docId) // Assuming docId is the doctor's ID
               .get();
 
       if (doc.exists) {
@@ -74,12 +76,14 @@ class _BookAppointmentViewState extends State<BookAppointmentView> {
       String date = doc.id;
       DateTime appointmentDate = DateFormat('yyyy-MM-dd').parse(date);
 
-      // Ignore past dates
-      if (appointmentDate.isBefore(today)) continue;
+      // Only consider appointments from today onwards
+      if (appointmentDate.isBefore(today.subtract(Duration(hours: 24)))) {
+        continue;
+      }
 
       List<dynamic> appointments = doc['appointments_available'];
       List<String> times = appointments
-          .where((appointment) => !appointment['booked'])
+          .where((appointment) => !(appointment['booked']))
           .map((appointment) => appointment['time'] as String)
           .toList();
 
@@ -89,27 +93,58 @@ class _BookAppointmentViewState extends State<BookAppointmentView> {
     setState(() {
       _availableAppointments = availableAppointments;
     });
+
+    // Select the first available date by default if available
+    if (availableAppointments.isNotEmpty) {
+      _selectDefaultDate();
+    }
   }
 
-  bool isTimeSlotBooked(String date, String time) {
+  void _selectDefaultDate() {
+    setState(() {
+      _selectedDate = _availableAppointments.keys.first;
+      _selectedDayIndex = 0;
+      _selectedTimeIndex = -1; // Reset time selection
+      _selectedTime = '';
+    });
+  }
+
+  Future<bool> isTimeSlotBooked(String date, String time) async {
     if (_availableAppointments.containsKey(date)) {
-      return !_availableAppointments[date]!.contains(time);
+      // Check if the specific time slot is booked
+      DocumentSnapshot doc = await _firestore
+          .collection('doctors')
+          .doc(widget.docId)
+          .collection('appointments')
+          .doc(date)
+          .get();
+
+      List<dynamic> appointments = doc['appointments_available'];
+
+      return appointments.any((appointment) =>
+          appointment['time'] == time && appointment['booked']);
     }
-    return true; // If date not found, consider the time slot as booked
+    return Future.value(
+        true); // If date not found or no times available, consider slot as booked
   }
 
   Future<void> bookAppointment(BuildContext context) async {
     if (_selectedDayIndex == -1 || _selectedTimeIndex == -1) {
-      _showDialog(context, "Incomplete Selection",
-          "Please select both a day and a time for the appointment.");
+      _showDialog(
+        context,
+        "Incomplete Selection",
+        "Please select both a day and a time for the appointment.",
+      );
       return;
     }
 
-    bool isAvailable = !isTimeSlotBooked(_selectedDate, _selectedTime);
-
-    if (!isAvailable) {
-      _showDialog(context, "Appointment Not Available",
-          "This appointment slot is already booked. Please select another date and time.");
+    bool isBooked = await isTimeSlotBooked(_selectedDate, _selectedTime);
+    if (isBooked) {
+      _showDialog(
+        context,
+        "Appointment Not Available",
+        "This appointment slot is already booked. Please select another date and time.",
+      );
       return;
     }
 
@@ -121,7 +156,7 @@ class _BookAppointmentViewState extends State<BookAppointmentView> {
       'appMobile': appMobileController.text,
       'appName': appNameController.text,
       'appMsg': appMessageController.text,
-      'appForUser': widget.userid
+      'appForUser': widget.userid,
     });
 
     await _firestore
@@ -139,8 +174,11 @@ class _BookAppointmentViewState extends State<BookAppointmentView> {
       ]),
     });
 
-    _showDialog(context, "Appointment Booked",
-        "Your appointment has been successfully booked.");
+    _showDialog(
+      context,
+      "Appointment Booked",
+      "Your appointment has been successfully booked.",
+    );
 
     _clearForm();
   }
@@ -167,10 +205,55 @@ class _BookAppointmentViewState extends State<BookAppointmentView> {
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text("OK"),
+            child: const Text("OK"),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildTimeSlotsChips(List<String> availableSlots) {
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 8.0,
+      children: availableSlots.map((slot) {
+        return FutureBuilder(
+          future: isTimeSlotBooked(_selectedDate, slot),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              bool isBooked = snapshot.data as bool;
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: ChoiceChip(
+                  label: Text(slot),
+                  selected: _selectedTime == slot,
+                  onSelected: isBooked
+                      ? null // Disable selection for booked slots
+                      : (bool selected) {
+                          setState(() {
+                            _selectedTimeIndex =
+                                selected ? availableSlots.indexOf(slot) : -1;
+                            _selectedTime = selected ? slot : '';
+                          });
+                        },
+                  backgroundColor:
+                      isBooked ? Colors.grey[300] : Colors.grey[100],
+                  labelStyle: TextStyle(
+                    color: isBooked ? Colors.black87 : Colors.black,
+                    fontWeight: isBooked ? FontWeight.normal : FontWeight.bold,
+                  ),
+                  selectedColor: Colors.purple,
+                  visualDensity: VisualDensity.compact,
+                  elevation: isBooked ? 0 : 2,
+                  shadowColor: Colors.grey[50],
+                ),
+              );
+            } else {
+              return CircularProgressIndicator();
+            }
+          },
+        );
+      }).toList(),
     );
   }
 
@@ -203,14 +286,14 @@ class _BookAppointmentViewState extends State<BookAppointmentView> {
               const SizedBox(height: 5),
               Text(
                 (_doctorData['docCategory'] ?? '') + ' Specialize',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                   color: Colors.grey,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   InfoCard(title: '350+', subtitle: 'Patients'),
@@ -222,7 +305,7 @@ class _BookAppointmentViewState extends State<BookAppointmentView> {
               Text(
                 _doctorData['docDesc'] ?? '',
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black54,
                 ),
@@ -270,35 +353,13 @@ class _BookAppointmentViewState extends State<BookAppointmentView> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
-              Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 8.0,
-                children: _selectedDate.isNotEmpty &&
-                        _availableAppointments.containsKey(_selectedDate)
-                    ? _availableAppointments[_selectedDate]!.map((time) {
-                        return ChoiceChip(
-                          label: Text(time),
-                          selected: _selectedTime == time,
-                          onSelected: (bool selected) {
-                            if (!isTimeSlotBooked(_selectedDate, time)) {
-                              setState(() {
-                                _selectedTimeIndex = selected
-                                    ? _availableAppointments[_selectedDate]!
-                                        .indexOf(time)
-                                    : -1;
-                                _selectedTime = selected ? time : '';
-                              });
-                            }
-                          },
-                          selectedColor: Colors.purple,
-                          backgroundColor: Colors.grey[100],
-                          disabledColor: Colors.redAccent,
-                        );
-                      }).toList()
-                    : [
-                        Text("No available appointments for this date")
-                      ], // Display message if no appointments are available
-              ),
+              _selectedDate.isNotEmpty &&
+                      _availableAppointments.containsKey(_selectedDate)
+                  ? _buildTimeSlotsChips(_availableAppointments[_selectedDate]!)
+                  : const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text("No available appointments for this date"),
+                    ),
               const SizedBox(height: 20),
               const Text(
                 'Make Appointment',
@@ -311,7 +372,7 @@ class _BookAppointmentViewState extends State<BookAppointmentView> {
               const SizedBox(height: 10),
               TextField(
                 controller: appMobileController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Your Mobile',
                   border: OutlineInputBorder(),
                 ),
@@ -319,7 +380,7 @@ class _BookAppointmentViewState extends State<BookAppointmentView> {
               const SizedBox(height: 10),
               TextField(
                 controller: appNameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Your Name',
                   border: OutlineInputBorder(),
                 ),
@@ -328,7 +389,7 @@ class _BookAppointmentViewState extends State<BookAppointmentView> {
               TextField(
                 controller: appMessageController,
                 maxLines: 4,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Message',
                   border: OutlineInputBorder(),
                 ),
@@ -352,8 +413,11 @@ class InfoCard extends StatelessWidget {
   final String title;
   final String subtitle;
 
-  const InfoCard({Key? key, required this.title, required this.subtitle})
-      : super(key: key);
+  const InfoCard({
+    Key? key, // Corrected the constructor parameter
+    required this.title,
+    required this.subtitle,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

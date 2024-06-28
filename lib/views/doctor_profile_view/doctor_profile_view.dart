@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -101,7 +102,7 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Rate Doctor"),
+          title: const Text("Rate Doctor"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -111,8 +112,8 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
                 direction: Axis.horizontal,
                 allowHalfRating: true,
                 itemCount: 5,
-                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                itemBuilder: (context, _) => Icon(
+                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                itemBuilder: (context, _) => const Icon(
                   Icons.star,
                   color: Colors.amber,
                 ),
@@ -124,7 +125,7 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
               ),
               TextField(
                 controller: feedbackController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Leave a feedback",
                 ),
               ),
@@ -132,7 +133,7 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
           ),
           actions: [
             TextButton(
-              child: Text("Submit"),
+              child: const Text("Submit"),
               onPressed: () {
                 updateRating(rating!, feedbackController.text);
                 Navigator.of(context).pop();
@@ -173,7 +174,7 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
                       radius: 40,
                       backgroundImage: AssetImage(AppAssets.imgSignup),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,10 +189,10 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
                             color: AppColors.textColor.withOpacity(0.5),
                             size: AppSize.size12,
                           ),
-                          Spacer(),
+                          const Spacer(),
                           RatingBarIndicator(
                             rating: rating ?? 0.0,
-                            itemBuilder: (context, index) => Icon(
+                            itemBuilder: (context, index) => const Icon(
                               Icons.star,
                               color: Colors.amber,
                             ),
@@ -212,7 +213,7 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -245,23 +246,23 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     AppStyle.bold(
                       title: "Address",
                       color: AppColors.textColor,
                       size: AppSize.size16,
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     AppStyle.normal(
                       title: widget.doc['docAddress'],
                       color: AppColors.textColor.withOpacity(0.5),
                       size: AppSize.size12,
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -278,7 +279,7 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
                     ),
                     ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: feedbackList.length,
                       itemBuilder: (context, index) {
                         final feedback = feedbackList[index];
@@ -292,7 +293,7 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
                           ),
                           subtitle: RatingBarIndicator(
                             rating: feedback['rating']?.toDouble() ?? 0.0,
-                            itemBuilder: (context, index) => Icon(
+                            itemBuilder: (context, index) => const Icon(
                               Icons.star,
                               color: Colors.amber,
                             ),
@@ -312,8 +313,8 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: showRatingDialog,
-        child: Icon(Icons.add),
         backgroundColor: Colors.blue,
+        child: const Icon(Icons.add),
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(10.0),

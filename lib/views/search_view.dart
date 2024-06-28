@@ -9,7 +9,7 @@ class SearchView extends StatelessWidget {
   final String city;
   final String specialization;
 
-  const SearchView({
+  const SearchView({super.key, 
     required this.searchQuery,
     required this.city,
     required this.specialization,

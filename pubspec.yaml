@@ -37,7 +37,6 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   google_maps_flutter: ^2.1.6
-  http: 0.13.6
   flutter_polyline_points: ^1.0.0
   flutter_google_places: ^0.3.0
   google_directions_api: ^0.9.1
@@ -46,10 +45,8 @@ dependencies:
   cloud_firestore: ^4.17.3
   firebase_auth: ^4.19.5
   geolocator: ^12.0.0
-  dio: ^5.4.3+1
   get: ^4.6.6
   intl: ^0.19.0
-  velocity_x: ^4.2.1
   country_code_picker: ^3.0.0
   pin_code_fields: ^8.0.1
   google_fonts: ^4.0.4

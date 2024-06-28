@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:test_app/consts/consts.dart';
 import 'package:test_app/views/appointment_view/appointment_view.dart';
@@ -59,7 +58,7 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
               20.heightBox,
               const SearchBars(),
               20.heightBox,
-              UpcomingAppointments(),
+              const UpcomingAppointments(),
               20.heightBox,
               const SizedBox(height: 10),
               20.heightBox,
@@ -73,7 +72,7 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => DoctorAppointmentScreen()),
+            MaterialPageRoute(builder: (context) => const DoctorAppointmentScreen()),
           );
         },
         backgroundColor: Colors.blueAccent,

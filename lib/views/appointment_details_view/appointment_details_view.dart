@@ -85,7 +85,8 @@ class AppointmentDetailsView extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
-                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -103,6 +104,7 @@ class AppointmentDetailsView extends StatelessWidget {
     );
   }
 
+  // Helper method to build a detail row with icon, label, and value
   Widget _buildDetailRow(IconData icon, String label, String value) {
     return Row(
       children: [

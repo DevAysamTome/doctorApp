@@ -1,12 +1,13 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:test_app/consts/consts.dart';
 import 'package:test_app/lists.dart';
 import 'package:test_app/views/category_details_view/category_details_view.dart';
 
 class CategoryView extends StatefulWidget {
-  CategoryView({super.key});
+  const CategoryView({super.key});
 
   @override
   State<CategoryView> createState() => _CategoryViewState();

@@ -9,15 +9,12 @@ import '../../consts/images.dart';
 import '../../consts/strings.dart';
 import '../../controllers/auth_controllers.dart';
 import '../../res/components/custom_button.dart';
-import '../../res/components/custom_textfield.dart';
-import '../admin_view/admin_view.dart';
 import '../doctor/home_doctor.dart';
-import '../home_view/doctor_home_view.dart';
 import '../home_view/home.dart';
 import '../signup_view/signup_view.dart';
 
 class LoginView extends StatefulWidget {
-  const LoginView({Key? key}) : super(key: key);
+  const LoginView({super.key});
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -181,7 +178,7 @@ class _LoginViewState extends State<LoginView> {
                       const SizedBox(height: 20),
                       GestureDetector(
                         onTap: () {
-                          Get.offAll(() => ForgotPasswordScreen());
+                          Get.offAll(() => const ForgotPasswordScreen());
                         },
                         child: Align(
                           alignment: Alignment.centerLeft,
@@ -263,7 +260,7 @@ class _LoginViewState extends State<LoginView> {
                         onPressed: () {
                           // Navigate to the admin login page
                           // Replace AdminLoginView with your actual admin login page
-                          Get.to(() => LoginScreen());
+                          Get.to(() => const LoginScreen());
                         },
                         child: const Text("Sign in as an admin"),
                       ),

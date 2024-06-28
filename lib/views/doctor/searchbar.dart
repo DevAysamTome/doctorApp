@@ -1,9 +1,11 @@
+// ignore_for_file: library_private_types_in_public_api, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SearchBars extends StatefulWidget {
-  const SearchBars({Key? key}) : super(key: key);
+  const SearchBars({super.key});
 
   @override
   _SearchBarsState createState() => _SearchBarsState();
@@ -65,7 +67,7 @@ class _SearchBarsState extends State<SearchBars> {
                   // Call search function when text changes
                   _search(value, FirebaseAuth.instance.currentUser!.uid);
                 },
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Search patients',
                 ),
               ),
@@ -82,7 +84,7 @@ class _SearchBarsState extends State<SearchBars> {
                     },
                   );
                 },
-                icon: Icon(Icons.search),
+                icon: const Icon(Icons.search),
               ),
             ),
           ],
@@ -97,18 +99,17 @@ class SearchResultsBottomSheet extends StatelessWidget {
   final bool showResults;
 
   const SearchResultsBottomSheet(
-      {Key? key, required this.searchResults, required this.showResults})
-      : super(key: key);
+      {super.key, required this.searchResults, required this.showResults});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Search Results'),
-          SizedBox(height: 16.0),
+          const Text('Search Results'),
+          const SizedBox(height: 16.0),
           if (showResults)
             Expanded(
               child: ListView.builder(
@@ -122,7 +123,7 @@ class SearchResultsBottomSheet extends StatelessWidget {
               ),
             )
           else
-            Text('No patients found.'),
+            const Text('No patients found.'),
         ],
       ),
     );

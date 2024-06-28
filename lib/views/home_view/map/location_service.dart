@@ -1,29 +1,37 @@
-import 'package:location/location.dart';
+import 'package:location/location.dart'; // Import the location package
 
 class LocationService {
   Future<LocationData> getLocation() async {
-    Location location = new Location();
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-    LocationData _locationData;
+    Location location = Location(); // Create an instance of Location
 
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = (await location.requestPermission()) as bool;
-      if (!_serviceEnabled) {
-        throw Exception();
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+    LocationData locationData;
+
+    // Check if location services are enabled
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      // Request to enable location services if not already enabled
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        throw Exception(
+            'Location services are disabled.'); // Throw an exception if unable to enable location services
       }
     }
 
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        throw Exception();
+    // Check the permission status
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      // Request location permission if not granted
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        throw Exception(
+            'Location permission denied.'); // Throw an exception if permission is not granted
       }
     }
 
-    _locationData = await location.getLocation();
-    return _locationData;
+    // Get the current location
+    locationData = await location.getLocation();
+    return locationData; // Return the fetched location data
   }
 }

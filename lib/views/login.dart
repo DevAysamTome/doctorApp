@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:test_app/consts/consts.dart';
 import 'package:test_app/views/admin_view/admin_view.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -22,12 +23,12 @@ class _LoginScreenState extends State<LoginScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Error'),
-            content: Text('Please enter both email and password.'),
+            title: const Text('Error'),
+            content: const Text('Please enter both email and password.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           );
@@ -51,22 +52,21 @@ class _LoginScreenState extends State<LoginScreen> {
               .get();
 
       if (adminSnapshot.exists) {
-        Get.offAll(() => AdminView());
+        Get.offAll(() => const AdminView());
       } else {
         // Not an admin, sign out the user
         await FirebaseAuth.instance.signOut();
-        print("Error: User is not an admin");
         // Show error message to the user
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Error'),
-              content: Text('You are not authorized to access this page.'),
+              title: const Text('Error'),
+              content: const Text('You are not authorized to access this page.'),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('OK'),
+                  child: const Text('OK'),
                 ),
               ],
             );
@@ -74,18 +74,17 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } catch (e) {
-      print('Failed to sign in: $e');
       // Show error message to the user
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Error'),
-            content: Text('Failed to sign in. Please try again.'),
+            title: const Text('Error'),
+            content: const Text('Failed to sign in. Please try again.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           );
@@ -99,12 +98,12 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
+              const Text(
                 'Login here',
                 style: TextStyle(
                   fontSize: 28,
@@ -112,12 +111,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: Colors.blue,
                 ),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 'Welcome back you’ve been missed!',
                 style: TextStyle(fontSize: 16, color: Colors.black54),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Email',
@@ -127,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 controller: emailController,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -138,26 +137,25 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: true,
                 controller: passwordController,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
                     // Handle forgot password
                   },
-                  child: Text(
+                  child: const Text(
                     'Forgot your password?',
                     style: TextStyle(color: Colors.blue),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () => signIn(context),
-                  child: Text('Sign in'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,
@@ -165,9 +163,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  child:  const Text('Sign in'),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
             ],
           ),
         ),
