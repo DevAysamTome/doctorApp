@@ -53,6 +53,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   rive: ^0.13.5
   location: ^6.0.2
+  velocity_x: ^4.2.1
   
 
 dev_dependencies:
